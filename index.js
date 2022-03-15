@@ -10,11 +10,11 @@ const defaultTitle = title.innerText;
 //처음 게임 시작
 document.addEventListener('keypress', (event) => {
   if (event.key === 'a' && isPlaying === false) {
-    //버튼클릭사운드 이벤트 추가
+    //버튼클릭 사운드 이벤트 추가
     btnsOnClickPlaySound();
-    //버튼클릭답체크 이벤트 추가
+    // //버튼클릭 답체크 이벤트 추가
     btnsOnClickCheckAnswer();
-    console.log('a키가 눌렸습니다!');
+
     isPlaying = true;
     title.innerText = 'Level ' + stage;
     input = [];
@@ -24,40 +24,24 @@ document.addEventListener('keypress', (event) => {
 
 //버튼 클릭시 해당 오디오 재생
 function btnsOnClickPlaySound() {
-  btns[0].addEventListener('click', () => {
-    playBtnAudio(0);
-  });
+  btns[0].addEventListener('click', playBtnAudio);
 
-  btns[1].addEventListener('click', () => {
-    playBtnAudio(1);
-  });
+  btns[1].addEventListener('click', playBtnAudio);
 
-  btns[2].addEventListener('click', () => {
-    playBtnAudio(2);
-  });
+  btns[2].addEventListener('click', playBtnAudio);
 
-  btns[3].addEventListener('click', () => {
-    playBtnAudio(3);
-  });
+  btns[3].addEventListener('click', playBtnAudio);
 }
 
 //버튼 클릭시 답 제출 및 채점
 function btnsOnClickCheckAnswer() {
-  btns[0].addEventListener('click', () => {
-    checkAnswer(0);
-  });
+  btns[0].addEventListener('click', checkAnswer);
 
-  btns[1].addEventListener('click', () => {
-    checkAnswer(1);
-  });
+  btns[1].addEventListener('click', checkAnswer);
 
-  btns[2].addEventListener('click', () => {
-    checkAnswer(2);
-  });
+  btns[2].addEventListener('click', checkAnswer);
 
-  btns[3].addEventListener('click', () => {
-    checkAnswer(3);
-  });
+  btns[3].addEventListener('click', checkAnswer);
 }
 
 //게임 시작시 랜덤 숫자 생성기
@@ -71,36 +55,18 @@ function lightBtn() {
 }
 
 //버튼 끄기(1초후)
-function offBtn(x, rNum) {
+function offBtn(x, num) {
   setTimeout(() => {
-    btns[rNum].classList.toggle('pressed');
+    btns[num].classList.toggle('pressed');
   }, 1000 * x);
 }
 
 //버튼 오디오 재생
 function playBtnAudio(num) {
-  switch (num) {
-    case 0: {
-      new Audio('sounds/green.mp3').play();
-      break;
-    }
-    case 1: {
-      new Audio('sounds/red.mp3').play();
-      break;
-    }
-    case 2: {
-      new Audio('sounds/yellow.mp3').play();
-      break;
-    }
-    case 3: {
-      new Audio('sounds/blue.mp3').play();
-      break;
-    }
-    default: {
-      console.log('playBtnAudio ERR!!');
-      break;
-    }
-  }
+  if (this.id === 'green' || num === 0) new Audio('sounds/green.mp3').play();
+  else if (this.id === 'red' || num === 1) new Audio('sounds/red.mp3').play();
+  else if (this.id === 'yellow' || num === 2) new Audio('sounds/yellow.mp3').play();
+  else new Audio('sounds/blue.mp3').play();
 }
 
 //성공 오디오 재생
@@ -115,15 +81,29 @@ function playWrongAudio() {
 
 //정답 저장
 function answerPush() {
-  answer.push(randomNum);
-
-  // console.log(randomNum);
+  switch (randomNum) {
+    case 0: {
+      answer.push('green');
+      break;
+    }
+    case 1: {
+      answer.push('red');
+      break;
+    }
+    case 2: {
+      answer.push('yellow');
+      break;
+    }
+    case 3: {
+      answer.push('blue');
+      break;
+    }
+  }
 }
 
 //채점
-function checkAnswer(num) {
-  if (num === answer[0]) {
-    console.log('정답입니다.');
+function checkAnswer() {
+  if (this.id === answer[0]) {
     answer.shift();
     if (answer.length === 0) {
       moveToNextStage();
@@ -166,12 +146,18 @@ function failToClear() {
   answer = [];
   title.innerText = defaultTitle;
   isPlaying = false;
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].removeEventListener('click', playBtnAudio);
+    btns[i].removeEventListener('click', checkAnswer);
+  }
 }
 
 //게임진행
 function playGame() {
   setTimeout(function () {
     chooseRandomNum();
+
+    console.log('랜덤 넘버는 : ' + randomNum);
 
     lightBtn();
 
