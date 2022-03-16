@@ -1,5 +1,7 @@
 const title = document.querySelector('#level-title');
-const btns = document.querySelectorAll('.btn');
+const startBtn = document.querySelector('#startBtn');
+const mobileTitle = document.querySelector('#mobile-title');
+const btns = document.querySelectorAll('.button');
 var randomNum;
 var stage = 1;
 var step = 1;
@@ -9,7 +11,23 @@ const defaultTitle = title.innerText;
 
 //처음 게임 시작
 document.addEventListener('keypress', (event) => {
-  if (event.key === 'a' && isPlaying === false) {
+  if (event.key === 'a') initializer();
+});
+
+startBtn.addEventListener('click', initializer);
+
+// window.onresize = () => {
+//   if (window.innerWidth < 993) {
+//     startBtn.style.display = 'block';
+//     defaultTitle.style.display = 'block';
+//   } else {
+//     startBtn.style.display = 'none';
+//     mobileTitle.style.display = 'none';
+//   }
+// };
+
+function initializer() {
+  if (isPlaying === false) {
     //버튼클릭 사운드 이벤트 추가
     btnsOnClickPlaySound();
     // //버튼클릭 답체크 이벤트 추가
@@ -19,29 +37,24 @@ document.addEventListener('keypress', (event) => {
     title.innerText = 'Level ' + stage;
     input = [];
     playGame();
+
+    startBtn.style.display = 'none';
+    mobileTitle.style.display = 'none';
   }
-});
+}
 
 //버튼 클릭시 해당 오디오 재생
 function btnsOnClickPlaySound() {
-  btns[0].addEventListener('click', playBtnAudio);
-
-  btns[1].addEventListener('click', playBtnAudio);
-
-  btns[2].addEventListener('click', playBtnAudio);
-
-  btns[3].addEventListener('click', playBtnAudio);
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener('click', playBtnAudio);
+  }
 }
 
 //버튼 클릭시 답 제출 및 채점
 function btnsOnClickCheckAnswer() {
-  btns[0].addEventListener('click', checkAnswer);
-
-  btns[1].addEventListener('click', checkAnswer);
-
-  btns[2].addEventListener('click', checkAnswer);
-
-  btns[3].addEventListener('click', checkAnswer);
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener('click', checkAnswer);
+  }
 }
 
 //게임 시작시 랜덤 숫자 생성기
@@ -124,12 +137,10 @@ function moveToNextStage() {
   });
 
   successPromise
-    .then((message) => {
-      console.log(message);
+    .then(() => {
       playSuccessAudio();
       stage++;
       step = 1;
-      console.log('현재 stage는 ' + stage + '입니다!');
       title.innerText = 'Level ' + stage;
       playGame();
     })
@@ -141,7 +152,6 @@ function moveToNextStage() {
 //스테이지 클리어 실패
 function failToClear() {
   playWrongAudio();
-  console.log('오답입니다.');
   stage = 1;
   answer = [];
   title.innerText = defaultTitle;
@@ -149,6 +159,11 @@ function failToClear() {
   for (var i = 0; i < btns.length; i++) {
     btns[i].removeEventListener('click', playBtnAudio);
     btns[i].removeEventListener('click', checkAnswer);
+  }
+  alert('오답입니다!');
+  if (window.innerWidth < 993) {
+    startBtn.style.display = 'block';
+    mobileTitle.style.display = 'block';
   }
 }
 
@@ -159,9 +174,9 @@ function playGame() {
 
     console.log('랜덤 넘버는 : ' + randomNum);
 
-    lightBtn();
-
     playBtnAudio(randomNum);
+
+    lightBtn();
 
     offBtn(1, randomNum);
 

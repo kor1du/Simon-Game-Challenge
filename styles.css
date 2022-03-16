@@ -10,13 +10,25 @@ body {
   color: white;
 }
 
+#mobile-title {
+  display: none;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
+  margin: 5%;
+  color: white;
+}
+
 .container {
   display: block;
   width: 50%;
   margin: auto;
 }
 
-.btn {
+.row {
+  justify-content: center;
+}
+
+.button {
   margin: 25px;
   display: inline-block;
   height: 200px;
@@ -25,7 +37,11 @@ body {
   border-radius: 20%;
 }
 
-.game-over {
+.btn-primary {
+  display: none;
+}
+
+.btn .game-over {
   background-color: red;
   opacity: 0.8;
 }
@@ -49,4 +65,23 @@ body {
 .pressed {
   box-shadow: 0 0 20px white;
   background-color: grey;
+}
+
+@media screen and (max-width: 992px) {
+  .btn-box {
+    display: flex;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    display: block;
+  }
+
+  #mobile-title {
+    display: block;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
+    margin: 5%;
+    color: white;
+  }
 }
