@@ -9,23 +9,26 @@ var answer = [];
 var isPlaying = false;
 const defaultTitle = title.innerText;
 
+//창 크기 감지(모바일)
+window.onresize = () => {
+  if (window.innerWidth > 992) {
+    startBtn.style.display = 'none';
+    mobileTitle.style.display = 'none';
+  } else {
+    startBtn.style.display = 'block';
+    mobileTitle.style.display = 'block';
+  }
+};
+
 //처음 게임 시작
+//a키 입력 감지
 document.addEventListener('keypress', (event) => {
   if (event.key === 'a') initializer();
 });
-
+//버튼 클릭(모바일)
 startBtn.addEventListener('click', initializer);
 
-// window.onresize = () => {
-//   if (window.innerWidth < 993) {
-//     startBtn.style.display = 'block';
-//     defaultTitle.style.display = 'block';
-//   } else {
-//     startBtn.style.display = 'none';
-//     mobileTitle.style.display = 'none';
-//   }
-// };
-
+//게임 초기화
 function initializer() {
   if (isPlaying === false) {
     //버튼클릭 사운드 이벤트 추가
@@ -43,17 +46,62 @@ function initializer() {
   }
 }
 
-//버튼 클릭시 해당 오디오 재생
+//게임진행
+function playGame() {
+  setTimeout(function () {
+    chooseRandomNum();
+
+    console.log('랜덤 넘버는 : ' + randomNum);
+
+    playBtnAudio(randomNum);
+
+    lightBtn();
+
+    offBtn(1, randomNum);
+
+    answerPush();
+
+    step++;
+
+    if (step <= stage) {
+      playGame();
+    }
+  }, 1500);
+}
+
+//버튼 클릭시 오디오 재생 이벤트 추가
 function btnsOnClickPlaySound() {
   for (var i = 0; i < btns.length; i++) {
     btns[i].addEventListener('click', playBtnAudio);
   }
 }
 
-//버튼 클릭시 답 제출 및 채점
+//버튼 오디오 재생
+function playBtnAudio(num) {
+  if (this.id === 'green' || num === 0) new Audio('sounds/green.mp3').play();
+  else if (this.id === 'red' || num === 1) new Audio('sounds/red.mp3').play();
+  else if (this.id === 'yellow' || num === 2) new Audio('sounds/yellow.mp3').play();
+  else new Audio('sounds/blue.mp3').play();
+}
+
+//버튼 클릭시 답 체크 이벤트 추가
 function btnsOnClickCheckAnswer() {
   for (var i = 0; i < btns.length; i++) {
     btns[i].addEventListener('click', checkAnswer);
+  }
+}
+
+//정답 체크
+function checkAnswer() {
+  if (this.id === answer[0]) {
+    answer.shift();
+    if (answer.length === 0) {
+      moveToNextStage();
+      return true;
+    }
+  } else {
+    failToClear();
+    return false;
   }
 }
 
@@ -72,14 +120,6 @@ function offBtn(x, num) {
   setTimeout(() => {
     btns[num].classList.toggle('pressed');
   }, 1000 * x);
-}
-
-//버튼 오디오 재생
-function playBtnAudio(num) {
-  if (this.id === 'green' || num === 0) new Audio('sounds/green.mp3').play();
-  else if (this.id === 'red' || num === 1) new Audio('sounds/red.mp3').play();
-  else if (this.id === 'yellow' || num === 2) new Audio('sounds/yellow.mp3').play();
-  else new Audio('sounds/blue.mp3').play();
 }
 
 //성공 오디오 재생
@@ -111,20 +151,6 @@ function answerPush() {
       answer.push('blue');
       break;
     }
-  }
-}
-
-//채점
-function checkAnswer() {
-  if (this.id === answer[0]) {
-    answer.shift();
-    if (answer.length === 0) {
-      moveToNextStage();
-      return true;
-    }
-  } else {
-    failToClear();
-    return false;
   }
 }
 
@@ -165,27 +191,4 @@ function failToClear() {
     startBtn.style.display = 'block';
     mobileTitle.style.display = 'block';
   }
-}
-
-//게임진행
-function playGame() {
-  setTimeout(function () {
-    chooseRandomNum();
-
-    console.log('랜덤 넘버는 : ' + randomNum);
-
-    playBtnAudio(randomNum);
-
-    lightBtn();
-
-    offBtn(1, randomNum);
-
-    answerPush();
-
-    step++;
-
-    if (step <= stage) {
-      playGame();
-    }
-  }, 1500);
 }

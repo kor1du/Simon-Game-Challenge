@@ -37,6 +37,11 @@ body {
   border-radius: 20%;
 }
 
+.btn-box {
+  display: flex;
+  justify-content: center;
+}
+
 .btn-primary {
   display: none;
 }
@@ -68,11 +73,6 @@ body {
 }
 
 @media screen and (max-width: 992px) {
-  .btn-box {
-    display: flex;
-    justify-content: center;
-  }
-
   .btn-primary {
     display: block;
   }
