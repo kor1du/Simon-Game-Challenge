@@ -25,16 +25,27 @@ window.onresize = () => {
 document.addEventListener('keypress', (event) => {
   if (event.key === 'a') initializer();
 });
+
 //버튼 클릭(모바일)
 startBtn.addEventListener('click', initializer);
+
+function checkColor(color) {
+  if (color.id === 'green') {
+    return btns[0];
+  } else if (color.id === 'red') {
+    return btns[1];
+  } else if (color.id === 'yellow') {
+    return btns[2];
+  } else if (color.id === 'blue') {
+    return btns[3];
+  } else return btns[randomNum];
+}
 
 //게임 초기화
 function initializer() {
   if (isPlaying === false) {
     //버튼클릭 사운드 이벤트 추가
-    btnsOnClickPlaySound();
-    // //버튼클릭 답체크 이벤트 추가
-    btnsOnClickCheckAnswer();
+    btnsOnClick();
 
     isPlaying = true;
     title.innerText = 'Level ' + stage;
@@ -57,7 +68,7 @@ function playGame() {
 
     lightBtn();
 
-    offBtn(1, randomNum);
+    offBtn();
 
     answerPush();
 
@@ -69,10 +80,13 @@ function playGame() {
   }, 1500);
 }
 
-//버튼 클릭시 오디오 재생 이벤트 추가
-function btnsOnClickPlaySound() {
+//버튼 클릭시 이벤트 추가
+function btnsOnClick() {
   for (var i = 0; i < btns.length; i++) {
-    btns[i].addEventListener('click', playBtnAudio);
+    btns[i].addEventListener('click', playBtnAudio); //버튼 클릭시 사운드 재생
+    btns[i].addEventListener('click', lightBtn); //버튼 클릭시 불 켜기
+    btns[i].addEventListener('click', offBtn); // 버튼 클릭시 불 끄기
+    btns[i].addEventListener('click', checkAnswer); //버튼 클릭시 정답 확인
   }
 }
 
@@ -82,13 +96,6 @@ function playBtnAudio(num) {
   else if (this.id === 'red' || num === 1) new Audio('sounds/red.mp3').play();
   else if (this.id === 'yellow' || num === 2) new Audio('sounds/yellow.mp3').play();
   else new Audio('sounds/blue.mp3').play();
-}
-
-//버튼 클릭시 답 체크 이벤트 추가
-function btnsOnClickCheckAnswer() {
-  for (var i = 0; i < btns.length; i++) {
-    btns[i].addEventListener('click', checkAnswer);
-  }
 }
 
 //정답 체크
@@ -112,14 +119,14 @@ function chooseRandomNum() {
 
 //버튼 켜기
 function lightBtn() {
-  btns[randomNum].classList.toggle('pressed');
+  checkColor(this).classList.toggle('pressed');
 }
 
 //버튼 끄기(1초후)
-function offBtn(x, num) {
+function offBtn() {
   setTimeout(() => {
-    btns[num].classList.toggle('pressed');
-  }, 1000 * x);
+    checkColor(this).classList.toggle('pressed');
+  }, 1000);
 }
 
 //성공 오디오 재생
