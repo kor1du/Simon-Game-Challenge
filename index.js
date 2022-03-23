@@ -189,10 +189,14 @@ function failToClear() {
   answer = [];
   title.innerText = defaultTitle;
   isPlaying = false;
+
   for (var i = 0; i < btns.length; i++) {
     btns[i].removeEventListener('click', playBtnAudio);
     btns[i].removeEventListener('click', checkAnswer);
+    btns[i].removeEventListener('click', lightBtn);
+    btns[i].removeEventListener('click', offBtn);
   }
+
   alert('오답입니다!');
   if (window.innerWidth < 993) {
     startBtn.style.display = 'block';
